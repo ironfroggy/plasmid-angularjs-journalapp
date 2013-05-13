@@ -1,1 +1,6 @@
 /* Will be compiled down to a single stylesheet with your sass files */
+
+[write] {
+    width: 100%;
+    font-size: 16pt;
+}
