@@ -2,41 +2,20 @@
 
 angular.module('journalappApp')
 
-  .factory('entryStorage', function() {
-    var plasmid = require('plasmid');
-    var DB = new plasmid.Database({
-      name: "journalapp",
-      schema: {
-        version: 1,
-        stores: {
-          entries: {sync: false}
-        }
-      }
-    });
-
-    var service = {};
-    var wait = new plasmid.Promise();
-
-    DB.onopensuccess = function() {
-      wait.ok(service);
-    };
-
-    service.fetch = function() {
-      return DB.stores.entries.walk(); 
-    };
-
-    return wait;
-  })
-
   .controller('WriteCtrl', function($scope, entryStorage) {
     $scope.addEntry = function(entry_text) {
-      console.log("save: ", entry_text);
+      entryStorage.then(function(entryStorage){
+        entryStorage.save(entry_text);
+        $scope.entryTotal += 1;
+        $scope.$apply();
+      });
     }
 
     entryStorage.then(function(entryStorage) {
-      entryStorage.fetch()
-      .then(function(entries){
-        console.log('found ' + entries.length + ' entries');
+      entryStorage.count()
+      .then(function(n){
+        $scope.entryTotal = n;
+        $scope.$apply();
       });
     });
   })
