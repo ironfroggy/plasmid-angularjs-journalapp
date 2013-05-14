@@ -3,6 +3,8 @@
 angular.module('journalappApp')
 
   .controller('WriteCtrl', function($scope, entryStorage) {
+    $scope.wordTotal = 0;
+
     $scope.addEntry = function(entry_text) {
       entryStorage.then(function(entryStorage){
         entryStorage.save(entry_text);
@@ -20,6 +22,8 @@ angular.module('journalappApp')
     });
   })
 
+  // The write directive enables write-and-submit behavior for text entries,
+  // where their contents are submitted and cleared on [enter] press.
   .directive('write', function() {
     return {
       restrict: 'A',
@@ -31,9 +35,15 @@ angular.module('journalappApp')
           }
         });
         element.bind('keyup', function(e) {
+          $scope.wordTotal = 0;
           if (e.keyCode === 13) {
             element.val('');
+          } else {
+            if (element.val().trim().length > 0) {
+              $scope.wordTotal = element.val().split(' ').length;
+            }
           }
+          $scope.$apply();
         });
       }
     };
