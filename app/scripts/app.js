@@ -1,15 +1,5 @@
 'use strict';
 
-var dbconfig = {
-  name: "journalapp",
-  schema: {
-    version: 1,
-    stores: {
-      entries: {sync: false}
-    }
-  }
-};
-
 angular.module('journalappApp', [])
   .config(function ($routeProvider) {
     $routeProvider
@@ -28,7 +18,7 @@ angular.module('journalappApp', [])
 
   .factory('entryStorage', function() {
     var plasmid = require('plasmid');
-    var DB = new plasmid.Database(dbconfig);
+    var DB = new plasmid.Database(app.dbconfig);
 
     var service = {
 
