@@ -28,6 +28,8 @@ angular.module('journalappApp')
     return {
       restrict: 'A',
       link: function($scope, element, attrs) {
+        element[0].focus();
+
         element.bind('keydown', function(e) {
           if (e.keyCode === 13) {
             var entry_text = element.val()

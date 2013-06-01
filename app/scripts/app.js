@@ -11,6 +11,10 @@ angular.module('journalappApp', [])
         templateUrl: 'views/write.html',
         controller: 'WriteCtrl'
       })
+      .when('/entries', {
+        templateUrl: 'views/entries.html',
+        controller: 'EntryListCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
@@ -20,10 +24,32 @@ angular.module('journalappApp', [])
     var plasmid = require('plasmid');
     var DB = new plasmid.Database(app.dbconfig);
 
+    var scopes = [];
+    var $apply = function() {
+      for (var i=0; i < scopes.length; i++) {
+        scopes[i].$apply();
+      }
+    };
+    var $register = function(scope) {
+        scopes.push(scope);
+        scope.$apply();
+    };
+
     var service = {
+      $register: function(scope) {
+        $register(scope);
+      },
+
+      entries: [],
 
       fetch: function() {
-        return DB.stores.entries.walk(); 
+        var walk = DB.stores.entries.walk(); 
+        var entries = this.entries;
+        walk.on('each', function(entry) {
+            entries.push(entry.value);
+        });
+        walk.then($apply);
+        return walk;
       },
 
       count: function() {
@@ -31,16 +57,20 @@ angular.module('journalappApp', [])
       },
 
       save: function(entry_text) {
-        DB.stores.entries.add(new Date(), {
+        var entry = {
           text: entry_text,
           created: new Date(),
-        });
+        };
+        service.entries.push(entry);
+        DB.stores.entries.add(new Date(), entry).then($apply);
       },
 
     };
 
     DB.onopensuccess = function() {
-      wait.ok(service);
+      service.fetch().then(function(){
+        wait.ok(service);
+      });
     };
     var wait = new plasmid.Promise();
     return wait;

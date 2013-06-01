@@ -4,3 +4,29 @@
     width: 100%;
     font-size: 16pt;
 }
+
+.entry {
+    list-style: none;
+    position: relative;
+    padding: 0.5em;
+    min-height: 25px;
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    background: #f8f8f8;
+    margin-bottom: 5px;
+}
+
+.entry.odd {
+    background: #f4f4f4;
+}
+
+.entry .time {
+    font-style: italic;
+    position: absolute;
+    bottom: 0;
+    right: 0.5em;
+}
+
+.entry p {
+    margin-left: 1em;
+}
