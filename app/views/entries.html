@@ -1,0 +1,8 @@
+<div class="hero-unit" ng-controller=EntryListCtrl>
+  <h1>Write about anything</h1>
+  <h3>You're getting to know <a href="#/">JournalApp</a></h3>
+  <li ng-repeat="entry in entries" class=entry ng-class-even="'even'" ng-class-odd="'odd'">
+      <p>{{ entry.text }}<p>
+      <span class=time>{{ entry.created | date:"MMMM d, yyyy - HH:mm" }}</span>
+  </li>
+</div>
