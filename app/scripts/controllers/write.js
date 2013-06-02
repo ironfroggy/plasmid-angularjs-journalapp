@@ -6,19 +6,13 @@ angular.module('journalappApp')
     $scope.wordTotal = 0;
 
     $scope.addEntry = function(entry_text) {
-      entryStorage.then(function(entryStorage){
-        entryStorage.save(entry_text);
-        $scope.entryTotal += 1;
-        $scope.$apply();
-      });
+      entryStorage.save($scope, entry_text);
+      $scope.entryTotal += 1;
     }
 
-    entryStorage.then(function(entryStorage) {
-      entryStorage.count()
-      .then(function(n){
-        $scope.entryTotal = n;
-        $scope.$apply();
-      });
+    entryStorage.count($scope)
+    .then(function(n){
+      $scope.entryTotal = n;
     });
   })
 

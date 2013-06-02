@@ -4,12 +4,10 @@
 angular.module('journalappApp')
 
   .controller('EntryListCtrl', function($scope, entryStorage) {
-    entryStorage.then(function(entryStorage) {
 
-        $scope.entries = entryStorage.entries;
-        entryStorage.$register($scope);
-
-    });
+      entryStorage.fetch($scope).then(function(entries) {
+        $scope.entries = entries;
+      });
 
   })
 

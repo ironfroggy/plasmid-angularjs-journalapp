@@ -1,4 +1,11 @@
 <div class="hero-unit">
   <h1><a href="#/write">Write</a> about anything</h1>
   <h3>You're getting to know JournalApp</h3>
+
+  <div ng-controller=WriteCtrl>
+    <textarea write placeholder="I think it would be amazing if..."></textarea>
+    <span ng-show=wordTotal>{{ wordTotal }} words</span>
+    <span style="float:right;">{{ entryTotal }} <a href="#/entries">entries</a></span>
+  </div>
+
 </div>
