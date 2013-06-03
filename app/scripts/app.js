@@ -13,7 +13,13 @@ function AppliedPromise(promise, scope, msg) {
 };
 
 angular.module('journalappApp', [])
+
   .config(function ($routeProvider) {
+
+    angular.injector(['ng']).invoke(function($rootScope) {
+      app.root = $rootScope;
+    });
+
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
@@ -23,9 +29,9 @@ angular.module('journalappApp', [])
         templateUrl: 'views/write.html',
         controller: 'WriteCtrl'
       })
-      .when('/entries', {
-        templateUrl: 'views/entries.html',
-        controller: 'EntryListCtrl'
+      .when('/archive', {
+        templateUrl: 'views/archive.html',
+        controller: 'ArchiveCtrl'
       })
       .otherwise({
         redirectTo: '/'
@@ -69,14 +75,17 @@ angular.module('journalappApp', [])
         $register(scope);
       },
 
-      fetch: method(function(scope) {
-        var fetch = DB.stores.entries.fetch(); 
+      fetch: method(function(scope, filter) {
+        var fetch = DB.stores.entries.fetch(filter); 
+        var entries = [];
+        var p = new plasmid.Promise();
         fetch.then(function(results) {
           for (var i = 0; i < results.length; i++) {
-            results[i] = results[i].value;
+            entries.splice(0, 0, results[i].value );
           }
+          p.ok(entries);
         });
-        return fetch;
+        return p;
       }),
 
       count: method(function(scope) {
@@ -88,7 +97,11 @@ angular.module('journalappApp', [])
           text: entry_text,
           created: new Date(),
         };
-        return DB.stores.entries.add(new Date(), entry);
+        var add = DB.stores.entries.add(new Date(), entry);
+        add.then(function(key) {
+          app.root.$emit("EntryCreated", key, entry);
+        });
+        return add;
       }),
 
     };
